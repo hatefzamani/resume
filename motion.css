@@ -1,0 +1,9 @@
+.reading-progress{position:fixed;top:0;left:0;height:3px;width:100%;background:#bc653c;transform:scaleX(0);transform-origin:left;z-index:30;pointer-events:none}
+header{transition:box-shadow .3s ease}header.is-scrolled{box-shadow:0 8px 24px #202b260a}
+.current{position:relative;will-change:transform}
+.download,.text-link,.contact-links a{transition:background .25s ease,color .25s ease,box-shadow .25s ease}
+.download:hover{background:#e9eee7;box-shadow:0 4px 14px #214b3b12}
+.text-link span,.email span{display:inline-block}
+.job,.skill-columns>div,.education{transition:background .3s ease}
+.job:hover{background:#e9eee733}
+@media print{.reading-progress{display:none}}
