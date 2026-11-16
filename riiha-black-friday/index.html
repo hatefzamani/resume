@@ -81,6 +81,7 @@ footer{padding:16px 0 25px;font-size:11px;color:var(--muted)}
    <div class="controls">
     <label class="control" for="day">روز کمپین<select id="day"></select></label>
     <label class="control" for="team">تیم تأمین<select id="team"><option value="">همهٔ تیم‌ها</option></select></label>
+    <label class="control" for="team-sort">مرتب‌سازی تیم‌ها<select id="team-sort"><option value="daily">درصد تحقق روزانه</option><option value="campaign">درصد تحقق کل کمپین</option></select></label>
     <button id="today" type="button">امروز</button>
    </div>
    <div class="actions">
@@ -139,6 +140,7 @@ const isoDayFmt = new Intl.DateTimeFormat('en-CA',{year:'numeric',month:'2-digit
 const el = id => document.getElementById(id);
 const daySelect = el('day');
 const teamSelect = el('team');
+const teamSort = el('team-sort');
 const isReader = location.protocol === 'chrome-extension:';
 let snapshot = null;
 let timer = null;
@@ -213,17 +215,25 @@ function render() {
   const campaignValue = measure => campaignRows.length ? sum(campaignRows.map(measure)) : null;
   const picked = TEAMS.map((team,index) => index).filter(index => !teamSelect.value || String(TEAMS[index][0]) === teamSelect.value);
   const teamName = picked.length === TEAMS.length ? '' : ` · ${TEAMS[picked[0]][1]}`;
+  const campaignProducts = TEAMS.map((team,index) => campaignValue(sale => sale.products[index]));
+  const byCampaign = teamSort.value === 'campaign';
+  function attainment(index) {
+    const actual = byCampaign ? campaignProducts[index] : row?.products[index];
+    const goal = byCampaign ? TEAMS[index][3] : selectedGoal[index+1];
+    return actual == null ? -1 : actual / goal;
+  }
+  const sortedTeams = [...picked].sort((first,second) => attainment(second) - attainment(first));
   el('kpis').innerHTML = [
     summary('سفارش روز انتخاب‌شده',row?.orders,selectedGoal[0]),
     summary('سفارش کل کمپین',campaignValue(sale => sale.orders),70000),
     summary('محصول روز انتخاب‌شده' + teamName,row && sum(picked.map(index => row.products[index])),sum(picked.map(index => selectedGoal[index+1]))),
-    summary('محصول کل کمپین' + teamName,campaignValue(sale => sum(picked.map(index => sale.products[index]))),sum(picked.map(index => TEAMS[index][3])))
+    summary('محصول کل کمپین' + teamName,campaignRows.length ? sum(picked.map(index => campaignProducts[index])) : null,sum(picked.map(index => TEAMS[index][3])))
   ].join('');
-  el('teams').innerHTML = picked.map(index => {
+  el('teams').innerHTML = sortedTeams.map(index => {
     const [,name,owner,goal] = TEAMS[index];
     return `<article class="team"><h3>${name}</h3><div class="owner">${owner}</div>
       ${metric('روز انتخاب‌شده',row?.products[index],selectedGoal[index+1])}
-      ${metric('کل کمپین تا این لحظه',campaignValue(sale => sale.products[index]),goal)}</article>`;
+      ${metric('کل کمپین تا این لحظه',campaignProducts[index],goal)}</article>`;
   }).join('');
   const last = el('last-update');
   last.textContent = snapshot ? timeFmt.format(snapshot.updatedAt) : '—';
@@ -325,6 +335,7 @@ daySelect.value = campaignDay();
 el('source-link').href = RIIHA_SOURCE;
 daySelect.addEventListener('change',() => {followToday = false; render();});
 teamSelect.addEventListener('change',render);
+teamSort.addEventListener('change',render);
 el('today').addEventListener('click',() => {followToday = true; daySelect.value = campaignDay(); render();});
 el('reload').addEventListener('click',refresh);
 updateClock();
