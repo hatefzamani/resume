@@ -1,0 +1,230 @@
+<!doctype html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="dark">
+<title>نسخهٔ نمونه | داشبورد بلک‌فرایدی ریحا</title>
+<style>
+:root{color-scheme:dark;--bg:#090b14;--panel:#131723;--panel2:#191d2b;--line:#2b3040;--text:#f8f8fb;--muted:#aeb4c7;--orange:#ff9d59;--green:#82e5bb;--purple:#c4adff;font-family:Tahoma,"Segoe UI",sans-serif}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--text);font-size:14px;line-height:1.65}
+button,select{font:inherit;color:inherit}
+button,select{border:1px solid var(--line);background:var(--panel);border-radius:10px;padding:8px 12px}
+button:enabled,select{cursor:pointer}
+button:enabled:hover,select:hover{border-color:var(--orange)}
+button:disabled{opacity:.55}
+:focus-visible{outline:2px solid var(--orange);outline-offset:3px}
+.wrap{width:min(1280px,calc(100% - 64px));margin:auto}
+.top{border-bottom:1px solid var(--line);background:#10121c}
+.top-inner{display:flex;align-items:center;justify-content:space-between;gap:12px;min-height:66px;flex-wrap:wrap}
+.brand{display:flex;align-items:center;gap:12px;font-weight:700}
+.brand-mark{color:var(--orange);background:#332016;border:1px solid #673c25;border-radius:9px;padding:3px 8px;font:700 18px Georgia,serif;letter-spacing:.05em;direction:ltr}
+.clock{color:var(--muted);font-size:12px}
+.hero{position:relative;overflow:hidden;isolation:isolate;margin-top:24px;border:1px solid #373041;border-radius:20px;padding:29px 33px 25px;background:radial-gradient(ellipse at 2% 25%,#60331f 0,transparent 46%),linear-gradient(120deg,#1d192a,#111625 60%,#141722)}
+.hero::before{content:"";position:absolute;inset:0;z-index:-1;opacity:.4;background-image:radial-gradient(#ba8e77 1px,transparent 1px);background-size:22px 22px;mask-image:linear-gradient(to right,#000,transparent 64%)}
+.hero-mark{position:absolute;z-index:-1;left:7%;top:6px;direction:ltr;font:900 clamp(58px,10vw,134px)/.94 Impact,"Arial Black",sans-serif;letter-spacing:-.04em;color:#ffe0c7;opacity:.15;transform:rotate(-11deg);text-align:left}
+.eyebrow{font-size:12px;color:var(--orange);font-weight:bold}
+h1{font-size:clamp(24px,3.5vw,42px);line-height:1.35;margin:7px 0 9px}
+.hero p{margin:0;color:#d4d6e0}
+.toolbar{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:end;gap:10px;margin:18px 0 12px}
+.controls,.actions{display:flex;align-items:end;flex-wrap:wrap;gap:8px}
+label.control{display:grid;gap:4px;color:var(--muted);font-size:12px}
+select{color:var(--text);min-height:42px}
+.sync{display:flex;flex-wrap:wrap;align-items:center;gap:6px 18px;margin-bottom:17px;color:var(--muted);font-size:12px}
+.status{display:inline-flex;align-items:center;gap:7px;color:var(--orange)}
+.status::before{content:"";background:currentColor;width:7px;height:7px;border-radius:50%;flex:none}
+.status[data-state=live]{color:var(--green)}
+.kpis{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}
+.kpi,.team{background:var(--panel);border:1px solid var(--line);border-radius:14px}
+.kpi{min-width:0;padding:13px 15px}
+.kpi-title,.kpi-sub,.owner,.metric-label{color:var(--muted);font-size:12px}
+.kpi-value{font-size:clamp(19px,2.8vw,29px);font-weight:700;margin:3px 0}
+.kpi:nth-child(2n) .kpi-value{color:var(--orange)}
+.section-title{font-size:19px;margin:24px 0 10px}
+.teams{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}
+.team{padding:13px 14px;min-width:0}
+.team h3{font-size:14px;line-height:1.6;margin:0}
+.owner{margin:3px 0 10px}
+.metric+.metric{margin-top:10px;padding-top:8px;border-top:1px solid var(--line)}
+.metric-head{display:flex;justify-content:space-between;align-items:baseline;gap:4px}
+.rate{color:var(--orange);font-size:18px;line-height:1.2}
+.metric:last-child .rate{color:var(--purple)}
+.track{height:5px;border-radius:7px;background:#303444;margin:6px 0;overflow:hidden}
+.track span{display:block;height:100%;border-radius:inherit;background:linear-gradient(90deg,#e86c2a,#ffb17d)}
+.metric:last-child .track span{background:linear-gradient(90deg,#8b6cde,#c9b6ff)}
+.metric dl{display:grid;grid-template-columns:repeat(3,1fr);gap:3px;margin:0;font-size:11px}
+.metric dt{color:var(--muted)}
+.metric dd{margin:0;font-weight:bold;font-size:12px}
+footer{padding:16px 0 25px;font-size:11px;color:var(--muted)}
+.error{color:#ffb69e;font-size:12px;margin:0 0 10px}
+.source-link{color:var(--orange);text-decoration-thickness:1px;text-underline-offset:3px}
+@media(max-width:930px){.teams{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:670px){.wrap{width:calc(100% - 28px)}.hero{padding:19px;margin-top:14px}.top-inner{padding:9px 0;min-height:56px}.kpis{grid-template-columns:repeat(2,minmax(0,1fr))}.controls,.actions{width:100%}.control{flex:1;min-width:130px}.hero-mark{top:20px}}
+@media(max-width:390px){.teams{grid-template-columns:minmax(0,1fr)}}
+</style>
+</head>
+<body>
+<header class="top"><div class="wrap top-inner">
+ <div class="brand"><span class="brand-mark" lang="en">RIIHA</span><span>تأمین ریحا</span></div>
+ <time id="clock" class="clock"></time>
+</div></header>
+<main class="wrap">
+ <section class="hero" aria-labelledby="heading">
+  <div class="hero-mark" aria-hidden="true">BLACK<br>FRIDAY</div>
+  <div class="eyebrow">نسخهٔ نمونه · اعداد کاملاً فرضی</div>
+  <h1 id="heading">داشبورد تأمین بلک‌فرایدی</h1>
+  <p>سناریوی فرضی تا ساعت ۱۴:۳۰ روز ۶ آذر · ۸ تیم تأمین</p>
+ </section>
+ <section aria-label="فیلتر و وضعیت دریافت فروش">
+  <div class="toolbar">
+   <div class="controls">
+    <label class="control" for="day">روز کمپین<select id="day"></select></label>
+    <label class="control" for="team">تیم تأمین<select id="team"><option value="">همهٔ تیم‌ها</option></select></label>
+    <button id="today" type="button">روز نمونه</button>
+   </div>
+   <a class="source-link" href="https://hatefzamani.github.io/resume/riiha-black-friday/">بازگشت به داشبورد اصلی ↗</a>
+  </div>
+  <div class="sync" aria-live="polite">
+   <span id="status" class="status"></span>
+   <span>زمان ثبت دادهٔ نمونه: <time id="last-update">—</time></span>
+  </div>
+  <p id="error" class="error" role="status" hidden></p>
+ </section>
+ <section class="kpis" id="kpis" aria-label="خلاصهٔ عملکرد"></section>
+ <h2 class="section-title">پیشرفت تیم‌های تأمین</h2>
+ <section class="teams" id="teams" aria-label="پیشرفت تیم‌ها"></section>
+ <footer>مبنای تارگت تیم‌ها تعداد محصول فروخته‌شده است. تارگت سفارش در سطح کل کمپین نمایش داده می‌شود. تاریخ و ساعت به وقت تهران است. <a class="source-link" id="source-link" target="_blank" rel="noopener noreferrer">گزارش سفارش‌های ریحا ↗</a></footer>
+</main>
+<script>
+'use strict';
+const RIIHA_SOURCE = 'https://www.riiha.ir/admin/panel/reports/order/chart?date_type=milady&country_unit_id=&start_date=2026-11-20&end_date=2026-12-11&type=daily&remaining_time_send_from=&remaining_time_send_to=&stack_available=&coupon_code=&chart%5B%5D=order_count&chart%5B%5D=product_count&chart%5B%5D=product_average&chart%5B%5D=order_amount&chart%5B%5D=product_amount&chart%5B%5D=order_average&chart%5B%5D=product_average_amount&chart%5B%5D=gold_weight_amount&time_frame_segments%5B%5D=__all__&creditor_id=&platform=';
+const ZONE = 'Asia/Tehran';
+const FIRST_DAY = '2026-11-20';
+const DAY_COUNT = 22;
+const TEAMS = [
+  [307,'آرایشی و بهداشتی','امیر، نرگس و میثم',70149],
+  [43,'طرف‌حساب رسمی','ثاره و بهار',44203],
+  [464,'عطر','عقیل و علی نجدی',30750],
+  [468,'رایحه و آرامش و عطر دست‌ساز','حسن',23063],
+  [69,'اکسسوری','مهدی',13453],
+  [362,'ناخن و برقی ناخن','امیررضا',7687],
+  [466,'طلا و جواهر','شیرین',1922],
+  [465,'ست و هدیه','فاطمه',961]
+];
+const targets = [
+  [1667,1670,1053,733,549,320,183,46,23],
+  [1667,1671,1053,732,549,320,183,46,23],
+  [4000,4008,2526,1757,1318,769,440,110,54],
+  [4000,4008,2526,1757,1318,769,439,110,55],
+  [14000,14030,8840,6150,4613,2691,1538,384,192],
+  [1667,1671,1052,732,549,321,183,46,23],
+  [1667,1671,1052,733,549,320,183,46,23],
+  [1666,1670,1052,732,549,320,183,45,23]
+];
+const dayPlan = [0,1,2,2,3,3,3,4,3,3,3,3,1,1,1,5,6,6,7,7,7,7];
+const dateAt = index => new Date(Date.parse(FIRST_DAY) + index * 86400000).toISOString().slice(0,10);
+const sum = values => values.reduce((total,value) => total + value,0);
+const plan = new Map(dayPlan.map((group,index) => [dateAt(index),targets[group]]));
+const fa = new Intl.NumberFormat('fa-IR');
+const rateFmt = new Intl.NumberFormat('fa-IR',{style:'percent',maximumFractionDigits:1});
+const shortDay = new Intl.DateTimeFormat('fa-IR',{day:'numeric',month:'long',timeZone:ZONE});
+const timeFmt = new Intl.DateTimeFormat('fa-IR',{dateStyle:'full',timeStyle:'short',timeZone:ZONE});
+const el = id => document.getElementById(id);
+const daySelect = el('day');
+const teamSelect = el('team');
+let snapshot = null;
+const DEMO_DATE = '2026-11-27';
+
+function format(value) {
+  return value == null ? '—' : fa.format(value);
+}
+
+function percentage(actual,target) {
+  return actual == null ? '—' : rateFmt.format(actual / target);
+}
+
+function metric(title,actual,goal) {
+  const width = actual == null ? 0 : Math.min(100,100 * actual / goal);
+  return `<div class="metric">
+    <div class="metric-head"><span class="metric-label">${title}</span><strong class="rate">${percentage(actual,goal)}</strong></div>
+    <div class="track" aria-hidden="true"><span style="width:${width}%"></span></div>
+    <dl><div><dt>فروش</dt><dd>${format(actual)}</dd></div><div><dt>تارگت</dt><dd>${format(goal)}</dd></div>
+    <div><dt>مانده</dt><dd>${format(actual == null ? null : Math.max(0,goal-actual))}</dd></div></dl>
+  </div>`;
+}
+
+function summary(title,actual,goal) {
+  return `<article class="kpi"><div class="kpi-title">${title}</div><div class="kpi-value">${percentage(actual,goal)}</div>
+    <div class="kpi-sub">${format(actual)} از ${format(goal)}</div></article>`;
+}
+
+function render() {
+  const date = daySelect.value;
+  const selectedGoal = plan.get(date);
+  const row = snapshot?.rows.get(date);
+  const campaignRows = [...(snapshot?.rows.values() ?? [])];
+  const campaignValue = measure => campaignRows.length ? sum(campaignRows.map(measure)) : null;
+  const picked = TEAMS.map((team,index) => index).filter(index => !teamSelect.value || String(TEAMS[index][0]) === teamSelect.value);
+  const teamName = picked.length === TEAMS.length ? '' : ` · ${TEAMS[picked[0]][1]}`;
+  el('kpis').innerHTML = [
+    summary('سفارش روز انتخاب‌شده',row?.orders,selectedGoal[0]),
+    summary('سفارش کل کمپین',campaignValue(sale => sale.orders),70000),
+    summary('محصول روز انتخاب‌شده' + teamName,row && sum(picked.map(index => row.products[index])),sum(picked.map(index => selectedGoal[index+1]))),
+    summary('محصول کل کمپین' + teamName,campaignValue(sale => sum(picked.map(index => sale.products[index]))),sum(picked.map(index => TEAMS[index][3])))
+  ].join('');
+  el('teams').innerHTML = picked.map(index => {
+    const [,name,owner,goal] = TEAMS[index];
+    return `<article class="team"><h3>${name}</h3><div class="owner">${owner}</div>
+      ${metric('روز انتخاب‌شده',row?.products[index],selectedGoal[index+1])}
+      ${metric('کل کمپین تا این لحظه',campaignValue(sale => sale.products[index]),goal)}</article>`;
+  }).join('');
+  const last = el('last-update');
+  last.textContent = snapshot ? timeFmt.format(snapshot.updatedAt) : '—';
+  if (snapshot) last.dateTime = snapshot.updatedAt.toISOString();
+}
+
+function showStatus(text,state,error = '') {
+  el('status').textContent = text;
+  el('status').dataset.state = state;
+  el('error').hidden = !error;
+  el('error').textContent = error;
+}
+
+function updateClock() {
+  const now = new Date();
+  el('clock').dateTime = now.toISOString();
+  el('clock').textContent = timeFmt.format(now) + ' · تهران';
+}
+
+for (const date of plan.keys()) {
+  const title = shortDay.format(new Date(date));
+  daySelect.add(new Option(title + (date === '2026-11-27' ? ' · روز اوج' : ''),date));
+}
+for (const [id,name] of TEAMS) teamSelect.add(new Option(name,String(id)));
+daySelect.value = DEMO_DATE;
+el('source-link').href = RIIHA_SOURCE;
+daySelect.addEventListener('change',render);
+teamSelect.addEventListener('change',render);
+el('today').addEventListener('click',() => {daySelect.value = DEMO_DATE; render();});
+const exampleOrderRates = [92,107,81,97,105,74,89,64];
+const exampleTeamRates = [76,68,94,87,58,72,108,49];
+const rows = new Map([...plan].filter(([date]) => date <= DEMO_DATE).map(([date,goals],dayIndex) => [
+  date,
+  {
+    orders:Math.round(goals[0]*exampleOrderRates[dayIndex]/100),
+    products:goals.slice(1).map((goal,teamIndex) => {
+      const priorRate = exampleTeamRates[teamIndex]+[16,23,7,20,14,2,12][dayIndex%7]+(teamIndex%3)*2;
+      return Math.round(goal*(date === DEMO_DATE ? exampleTeamRates[teamIndex] : priorRate)/100);
+    })
+  }
+]));
+snapshot = {updatedAt:new Date('2026-11-27T14:30:00+03:30'),rows};
+updateClock();
+setInterval(updateClock,10000);
+render();
+showStatus('دادهٔ فرضی · برای نمایش نحوهٔ کار','demo');
+</script>
+</body>
+</html>
+
