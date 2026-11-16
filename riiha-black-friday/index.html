@@ -28,7 +28,7 @@ button:disabled{opacity:.55}
 h1{font-size:clamp(24px,3.5vw,42px);line-height:1.35;margin:7px 0 9px}
 .hero p{margin:0;color:#d4d6e0}
 .toolbar{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:end;gap:10px;margin:18px 0 12px}
-.controls,.actions{display:flex;align-items:end;flex-wrap:wrap;gap:8px}
+.controls{display:flex;align-items:end;flex-wrap:wrap;gap:8px}
 label.control{display:grid;gap:4px;color:var(--muted);font-size:12px}
 select{color:var(--text);min-height:42px}
 .sync{display:flex;flex-wrap:wrap;align-items:center;gap:6px 18px;margin-bottom:17px;color:var(--muted);font-size:12px}
@@ -61,7 +61,7 @@ footer{padding:16px 0 25px;font-size:11px;color:var(--muted)}
 .error{color:#ffb69e;font-size:12px;margin:0 0 10px}
 .source-link{color:var(--orange);text-decoration-thickness:1px;text-underline-offset:3px}
 @media(max-width:930px){.teams{grid-template-columns:repeat(2,minmax(0,1fr))}}
-@media(max-width:670px){.wrap{width:calc(100% - 28px)}.hero{padding:19px;margin-top:14px}.top-inner{padding:9px 0;min-height:56px}.kpis{grid-template-columns:repeat(2,minmax(0,1fr))}.controls,.actions{width:100%}.control{flex:1;min-width:130px}.hero-mark{top:20px}}
+@media(max-width:670px){.wrap{width:calc(100% - 28px)}.hero{padding:19px;margin-top:14px}.top-inner{padding:9px 0;min-height:56px}.kpis{grid-template-columns:repeat(2,minmax(0,1fr))}.controls{width:100%}.control{flex:1;min-width:130px}.hero-mark{top:20px}}
 @media(max-width:390px){.teams{grid-template-columns:minmax(0,1fr)}}
 </style>
 </head>
@@ -84,9 +84,6 @@ footer{padding:16px 0 25px;font-size:11px;color:var(--muted)}
     <label class="control" for="team">تیم تأمین<select id="team"><option value="">همهٔ تیم‌ها</option></select></label>
     <label class="control" for="team-sort">مرتب‌سازی و رنگ تیم‌ها<select id="team-sort"><option value="daily">درصد تحقق روزانه</option><option value="campaign">درصد تحقق کل کمپین</option></select></label>
     <button id="today" type="button">امروز</button>
-   </div>
-   <div class="actions">
-    <button id="reload" type="button">↻ به‌روزرسانی</button>
    </div>
   </div>
   <div class="sync" aria-live="polite">
@@ -278,11 +275,9 @@ function refreshStatus() {
 }
 
 async function refresh() {
-  if (isReader) return refreshReader();
   if (inFlight || location.protocol === 'file:') return;
   inFlight = true;
   lastAttempt = Date.now();
-  el('reload').disabled = true;
   try {
     const response = await fetch(SALES_URL,{cache:'no-store',credentials:'same-origin',signal:AbortSignal.timeout(15000)});
     if (!response.ok) throw new Error(response.status === 404 ? 'فایل فروش روی سرور قرار نگرفته است.' : 'پاسخ منبع فروش قابل دریافت نیست.');
@@ -293,7 +288,6 @@ async function refresh() {
       error.message || 'در بررسی بعدی دوباره تلاش می‌شود.');
   } finally {
     inFlight = false;
-    el('reload').disabled = false;
     schedule();
   }
 }
@@ -304,21 +298,18 @@ async function renderReaderState() {
     const next = parseSales(riihaSnapshot);
     if (!snapshot || next.updatedAt >= snapshot.updatedAt) acceptSnapshot(next);
   }
-  el('reload').disabled = riihaStatus?.state === 'collecting';
   if (riihaStatus?.state === 'collecting') showStatus('در حال خواندن گزارش ریحا','stale');
   if (riihaStatus?.state === 'before-start') showStatus('کمپین هنوز شروع نشده است','idle');
   if (riihaStatus?.state === 'error') showStatus(snapshot ? 'نمایش آخرین دادهٔ دریافت‌شده' : 'گزارش ریحا دریافت نشد','stale',riihaStatus.message);
 }
 
 async function refreshReader() {
-  el('reload').disabled = true;
   try {
     const reply = await chrome.runtime.sendMessage({kind:'sync-riiha'});
     if (!reply?.ok) throw new Error('خواندن خودکار گزارش راه‌اندازی نشد.');
     await renderReaderState();
   } catch(error) {
     showStatus('گزارش ریحا دریافت نشد','stale',error.message);
-    el('reload').disabled = false;
   }
 }
 
@@ -349,12 +340,10 @@ daySelect.addEventListener('change',() => {followToday = false; render();});
 teamSelect.addEventListener('change',render);
 teamSort.addEventListener('change',render);
 el('today').addEventListener('click',() => {followToday = true; daySelect.value = campaignDay(); render();});
-el('reload').addEventListener('click',refresh);
 updateClock();
 setInterval(updateClock,10000);
 render();
 if (location.protocol === 'file:') {
-  el('reload').disabled = true;
   showStatus('پیش‌نمایش محلی · منبع فروش در نسخهٔ متصل در دسترس است','idle');
 } else if (isReader) {
   chrome.storage.onChanged.addListener((changes,area) => {
