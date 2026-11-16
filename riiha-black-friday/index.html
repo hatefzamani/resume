@@ -41,18 +41,19 @@ select{color:var(--text);min-height:42px}
 .kpi-title,.kpi-sub,.owner,.metric-label{color:var(--muted);font-size:12px}
 .kpi-value{font-size:clamp(19px,2.8vw,29px);font-weight:700;margin:3px 0}
 .kpi:nth-child(2n) .kpi-value{color:var(--orange)}
-.section-title{font-size:19px;margin:24px 0 10px}
+.team-heading{display:flex;align-items:center;justify-content:space-between;gap:8px 18px;flex-wrap:wrap;margin:24px 0 10px}
+.section-title{font-size:19px;margin:0}
+.color-key{display:flex;align-items:center;gap:8px;color:var(--muted);font-size:11px}
+.color-key-scale{width:76px;height:5px;border-radius:7px;background:linear-gradient(to left,hsl(4 76% 65%),hsl(46 76% 65%),hsl(138 76% 65%))}
 .teams{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}
-.team{padding:13px 14px;min-width:0}
+.team{padding:13px 14px;min-width:0;border-inline-start:3px solid var(--team-color);background-image:linear-gradient(145deg,color-mix(in srgb,var(--team-color) 12%,transparent),transparent 58%)}
 .team h3{font-size:14px;line-height:1.6;margin:0}
 .owner{margin:3px 0 10px}
 .metric+.metric{margin-top:10px;padding-top:8px;border-top:1px solid var(--line)}
 .metric-head{display:flex;justify-content:space-between;align-items:baseline;gap:4px}
-.rate{color:var(--orange);font-size:18px;line-height:1.2}
-.metric:last-child .rate{color:var(--purple)}
+.rate{color:var(--metric-color);font-size:18px;line-height:1.2}
 .track{height:5px;border-radius:7px;background:#303444;margin:6px 0;overflow:hidden}
-.track span{display:block;height:100%;border-radius:inherit;background:linear-gradient(90deg,#e86c2a,#ffb17d)}
-.metric:last-child .track span{background:linear-gradient(90deg,#8b6cde,#c9b6ff)}
+.track span{display:block;height:100%;border-radius:inherit;background:var(--metric-color)}
 .metric dl{display:grid;grid-template-columns:repeat(3,1fr);gap:3px;margin:0;font-size:11px}
 .metric dt{color:var(--muted)}
 .metric dd{margin:0;font-weight:bold;font-size:12px}
@@ -81,7 +82,7 @@ footer{padding:16px 0 25px;font-size:11px;color:var(--muted)}
    <div class="controls">
     <label class="control" for="day">روز کمپین<select id="day"></select></label>
     <label class="control" for="team">تیم تأمین<select id="team"><option value="">همهٔ تیم‌ها</option></select></label>
-    <label class="control" for="team-sort">مرتب‌سازی تیم‌ها<select id="team-sort"><option value="daily">درصد تحقق روزانه</option><option value="campaign">درصد تحقق کل کمپین</option></select></label>
+    <label class="control" for="team-sort">مرتب‌سازی و رنگ تیم‌ها<select id="team-sort"><option value="daily">درصد تحقق روزانه</option><option value="campaign">درصد تحقق کل کمپین</option></select></label>
     <button id="today" type="button">امروز</button>
    </div>
    <div class="actions">
@@ -96,7 +97,10 @@ footer{padding:16px 0 25px;font-size:11px;color:var(--muted)}
   <p id="error" class="error" role="status" hidden></p>
  </section>
  <section class="kpis" id="kpis" aria-label="خلاصهٔ عملکرد"></section>
- <h2 class="section-title">پیشرفت تیم‌های تأمین</h2>
+ <div class="team-heading">
+  <h2 class="section-title">پیشرفت تیم‌های تأمین</h2>
+  <div class="color-key"><span>۰٪</span><span class="color-key-scale" aria-hidden="true"></span><span>۱۰۰٪ و بیشتر</span></div>
+ </div>
  <section class="teams" id="teams" aria-label="پیشرفت تیم‌ها"></section>
  <footer>مبنای تارگت تیم‌ها تعداد محصول فروخته‌شده است. تارگت سفارش در سطح کل کمپین نمایش داده می‌شود. تاریخ و ساعت به وقت تهران است. <a class="source-link" id="source-link" target="_blank" rel="noopener noreferrer">گزارش سفارش‌های ریحا ↗</a></footer>
 </main>
@@ -167,6 +171,13 @@ function percentage(actual,target) {
   return actual == null ? '—' : rateFmt.format(actual / target);
 }
 
+function successColor(ratio) {
+  if (ratio == null) return '#8b93a8';
+  const share = Math.max(0,Math.min(1,ratio));
+  const hue = share <= 0.5 ? 4+84*share : 46+184*(share-0.5);
+  return `hsl(${Math.round(hue)} 76% 65%)`;
+}
+
 function parseSales(payload) {
   if (!payload || payload.schemaVersion !== 1 || typeof payload.updatedAt !== 'string' ||
       !/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d+)?(?:Z|[+-]\d{2}:\d{2})$/.test(payload.updatedAt) ||
@@ -194,7 +205,8 @@ function parseSales(payload) {
 
 function metric(title,actual,goal) {
   const width = actual == null ? 0 : Math.min(100,100 * actual / goal);
-  return `<div class="metric">
+  const color = successColor(actual == null ? null : actual / goal);
+  return `<div class="metric" style="--metric-color:${color}">
     <div class="metric-head"><span class="metric-label">${title}</span><strong class="rate">${percentage(actual,goal)}</strong></div>
     <div class="track" aria-hidden="true"><span style="width:${width}%"></span></div>
     <dl><div><dt>فروش</dt><dd>${format(actual)}</dd></div><div><dt>تارگت</dt><dd>${format(goal)}</dd></div>
@@ -220,9 +232,9 @@ function render() {
   function attainment(index) {
     const actual = byCampaign ? campaignProducts[index] : row?.products[index];
     const goal = byCampaign ? TEAMS[index][3] : selectedGoal[index+1];
-    return actual == null ? -1 : actual / goal;
+    return actual == null ? null : actual / goal;
   }
-  const sortedTeams = [...picked].sort((first,second) => attainment(second) - attainment(first));
+  const sortedTeams = [...picked].sort((first,second) => (attainment(second) ?? -1) - (attainment(first) ?? -1));
   el('kpis').innerHTML = [
     summary('سفارش روز انتخاب‌شده',row?.orders,selectedGoal[0]),
     summary('سفارش کل کمپین',campaignValue(sale => sale.orders),70000),
@@ -231,7 +243,7 @@ function render() {
   ].join('');
   el('teams').innerHTML = sortedTeams.map(index => {
     const [,name,owner,goal] = TEAMS[index];
-    return `<article class="team"><h3>${name}</h3><div class="owner">${owner}</div>
+    return `<article class="team" style="--team-color:${successColor(attainment(index))}"><h3>${name}</h3><div class="owner">${owner}</div>
       ${metric('روز انتخاب‌شده',row?.products[index],selectedGoal[index+1])}
       ${metric('کل کمپین تا این لحظه',campaignProducts[index],goal)}</article>`;
   }).join('');
