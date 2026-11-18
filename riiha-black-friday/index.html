@@ -4,11 +4,14 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="color-scheme" content="dark">
+<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+<link rel="preload" href="https://cdn.jsdelivr.net/gh/rastikerdar/vazirmatn@v33.003/fonts/webfonts/Vazirmatn%5Bwght%5D.woff2" as="font" type="font/woff2" crossorigin>
 <title>داشبورد تأمین بلک‌فرایدی | ریحا</title>
 <style>
-:root{color-scheme:dark;--bg:#090b14;--panel:#131723;--panel2:#191d2b;--line:#2b3040;--text:#f8f8fb;--muted:#aeb4c7;--orange:#ff9d59;--green:#82e5bb;--purple:#c4adff;font-family:Tahoma,"Segoe UI",sans-serif}
+@font-face{font-family:Vazirmatn;src:url("https://cdn.jsdelivr.net/gh/rastikerdar/vazirmatn@v33.003/fonts/webfonts/Vazirmatn%5Bwght%5D.woff2") format("woff2");font-style:normal;font-weight:100 900;font-display:swap}
+:root{color-scheme:dark;--bg:#090b14;--panel:#131723;--panel2:#191d2b;--line:#2b3040;--text:#f8f8fb;--muted:#aeb4c7;--orange:#ff9d59;--green:#82e5bb;--purple:#c4adff;font-family:Vazirmatn,Tahoma,"Segoe UI",sans-serif}
 *{box-sizing:border-box}
-body{margin:0;background:var(--bg);color:var(--text);font-size:14px;line-height:1.65}
+body{margin:0;background:var(--bg);color:var(--text);font-size:14px;line-height:1.8}
 button,select{font:inherit;color:inherit}
 button,select{border:1px solid var(--line);background:var(--panel);border-radius:10px;padding:8px 12px}
 button:enabled,select{cursor:pointer}
@@ -21,11 +24,12 @@ button:disabled{opacity:.55}
 .brand{display:flex;align-items:center;gap:12px;font-weight:700}
 .brand-mark{color:var(--orange);background:#332016;border:1px solid #673c25;border-radius:9px;padding:3px 8px;font:700 18px Georgia,serif;letter-spacing:.05em;direction:ltr}
 .clock{color:var(--muted);font-size:12px}
+.clock,.kpi-value,.kpi-sub,.rate,.metric dd{font-variant-numeric:tabular-nums}
 .hero{position:relative;overflow:hidden;isolation:isolate;margin-top:24px;border:1px solid #373041;border-radius:20px;padding:29px 33px 25px;background:radial-gradient(ellipse at 2% 25%,#60331f 0,transparent 46%),linear-gradient(120deg,#1d192a,#111625 60%,#141722)}
 .hero::before{content:"";position:absolute;inset:0;z-index:-1;opacity:.4;background-image:radial-gradient(#ba8e77 1px,transparent 1px);background-size:22px 22px;mask-image:linear-gradient(to right,#000,transparent 64%)}
 .hero-mark{position:absolute;z-index:-1;left:7%;top:6px;direction:ltr;font:900 clamp(58px,10vw,134px)/.94 Impact,"Arial Black",sans-serif;letter-spacing:-.04em;color:#ffe0c7;opacity:.15;transform:rotate(-11deg);text-align:left}
 .eyebrow{font-size:12px;color:var(--orange);font-weight:bold}
-h1{font-size:clamp(24px,3.5vw,42px);line-height:1.35;margin:7px 0 9px}
+h1{font-size:clamp(24px,3.5vw,42px);font-weight:800;line-height:1.5;margin:7px 0 9px}
 .hero p{margin:0;color:#d4d6e0}
 .toolbar{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:end;gap:10px;margin:18px 0 12px}
 .controls{display:flex;align-items:end;flex-wrap:wrap;gap:8px}
@@ -47,7 +51,7 @@ select{color:var(--text);min-height:42px}
 .color-key-scale{width:76px;height:5px;border-radius:7px;background:linear-gradient(to left,hsl(4 76% 65%),hsl(46 76% 65%),hsl(138 76% 65%))}
 .teams{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}
 .team{padding:13px 14px;min-width:0;border-inline-start:3px solid var(--team-color);background-image:linear-gradient(145deg,color-mix(in srgb,var(--team-color) 12%,transparent),transparent 58%)}
-.team h3{font-size:14px;line-height:1.6;margin:0}
+.team h3{font-size:15px;font-weight:700;line-height:1.8;margin:0}
 .owner{margin:3px 0 10px}
 .metric+.metric{margin-top:10px;padding-top:8px;border-top:1px solid var(--line)}
 .metric-head{display:flex;justify-content:space-between;align-items:baseline;gap:4px}
